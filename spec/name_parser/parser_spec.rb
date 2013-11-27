@@ -9,16 +9,16 @@ describe Parser do
   let!(:parser) { Parser.new(name) }
 
   [:name, :first, :middle, :last, :title, :suffix ].each do |attr|
-    describe "#{attr} attribute" do 
+    describe "#{attr} attribute" do
       it 'is read only' do
-        parser.methods.should_not include(":#{attr}=".to_sym) 
+        parser.methods.should_not include(":#{attr}=".to_sym)
       end
     end
   end
 
   describe 'name attribute' do
     it 'is set on initialize' do
-      get_name.should == name 
+      get_name.should == name
     end
   end
 
@@ -70,6 +70,17 @@ describe Parser do
 
       get_name.should == 'Johnny ;Smith'
     end
+
+    context 'when the first and last names are switched without punctuation' do
+      before do
+        set_name 'Collier Jonathan C'
+        parser.reverse_last_and_first_names
+      end
+      it 'returns the correct last name' do
+        get_name.should eq 'Jonathan C ;Collier'
+      end
+    end
+
   end
 
   describe '#remove_commas' do
@@ -100,7 +111,7 @@ describe Parser do
     context 'when a title is not found' do
       it 'returns nil' do
         set_name('Frank Burns')
-        
+
         parser.parse_title
         parser.title.should be_nil
       end
@@ -136,13 +147,13 @@ describe Parser do
 
   describe '#parse_name' do
     context 'when first initial and last name' do
-      before do 
+      before do
         set_name('J Tolkien')
         parser.parse_name
       end
 
       it 'returns first initial' do
-        parser.first.should == 'J' 
+        parser.first.should == 'J'
       end
 
       it 'returns nil middle name' do
@@ -161,7 +172,7 @@ describe Parser do
       end
 
       it 'returns first initial' do
-        parser.first.should == 'J' 
+        parser.first.should == 'J'
       end
 
       it 'returns middle initial' do
@@ -180,7 +191,7 @@ describe Parser do
       end
 
       it 'returns first initial' do
-        parser.first.should == 'J' 
+        parser.first.should == 'J'
       end
 
       it 'returns middle initial' do
@@ -199,7 +210,7 @@ describe Parser do
       end
 
       it 'returns first initial' do
-        parser.first.should == 'J' 
+        parser.first.should == 'J'
       end
 
       it 'returns both middle initials' do
@@ -219,7 +230,7 @@ describe Parser do
       end
 
       it 'returns first initial' do
-        parser.first.should == 'J' 
+        parser.first.should == 'J'
       end
 
       it 'returns middle name' do
@@ -238,7 +249,7 @@ describe Parser do
       end
 
       it 'returns first name' do
-        parser.first.should == 'John' 
+        parser.first.should == 'John'
       end
 
       it 'returns middle initial' do
@@ -257,7 +268,7 @@ describe Parser do
       end
 
       it 'returns first name' do
-        parser.first.should == 'John' 
+        parser.first.should == 'John'
       end
 
       it 'returns middle name' do
@@ -276,7 +287,7 @@ describe Parser do
       end
 
       it 'returns first name' do
-        parser.first.should == 'John' 
+        parser.first.should == 'John'
       end
 
       it 'returns middle name' do
@@ -289,13 +300,13 @@ describe Parser do
     end
 
     context 'when first name and last name' do
-      before do 
+      before do
         set_name('John Tolkien')
         parser.parse_name
       end
 
       it 'returns first name' do
-        parser.first.should == 'John' 
+        parser.first.should == 'John'
       end
 
       it 'returns nil middle name' do
@@ -308,13 +319,13 @@ describe Parser do
     end
 
     context 'when first name, middle name and last name' do
-      before do 
+      before do
         set_name('John Ronald Tolkien')
         parser.parse_name
       end
 
       it 'returns first name' do
-        parser.first.should == 'John' 
+        parser.first.should == 'John'
       end
 
       it 'returns  middle name' do
@@ -336,7 +347,7 @@ describe Parser do
     end
 
     context 'when last name is preceded by a semicolon' do
-      it 'returns last name' do 
+      it 'returns last name' do
         set_name('J R R ;Tolkien')
         parser.parse_name
         parser.last.should == 'Tolkien'

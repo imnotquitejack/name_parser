@@ -22,6 +22,31 @@ describe NameParser do
       parser.suffix.should == 'Jr.'
     end
   end
+
+  describe '.parse' do
+    context "should parse punctuation-less name mixes" do
+      it "should parse LAST FIRST M" do
+        name = NameParser.parse("Collier Jonathan C")
+        name.last.should eq "Collier"
+        name.first.should eq 'Jonathan'
+        name.middle.should eq 'C'
+      end
+      it "should parse LAST FIRST MIDDLE" do
+        name = NameParser.parse("HALDEMAN BETTY ANN")
+        name.last.should eq "Haldeman"
+        name.first.should eq 'Betty'
+        name.middle.should eq 'Ann'
+      end
+    end
+    context "should fix capitalization" do
+      it "should properly case a name" do
+        name = NameParser.parse("HALDEMAN BETTY ANN")
+        name.first.should eq 'Betty'
+        name.middle.should eq 'Ann'
+        name.last.should eq 'Haldeman'
+      end
+    end
+  end
 end
 
 describe String do

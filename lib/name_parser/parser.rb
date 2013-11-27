@@ -20,12 +20,13 @@ module NameParser
         parse_title
         parse_suffix
         parse_name
+        fix_cases
       end
 
       def remove_non_name_characters
         @name.gsub!(/[^A-Za-z0-9\-\'\.&\/ \,]/, '')
       end
-      
+
       def remove_extra_spaces
         @name.gsub!(/\s+/, ' ')
         @name.strip!
@@ -36,6 +37,13 @@ module NameParser
       end
 
       def reverse_last_and_first_names
+        # If the second name is in the nicknames list, then the format is probably LAST FIRST MIDDLE without commas
+        #debugger if @name == 'Collier Jonathan C'
+        #debugger
+        if NickNames[@name.split(' ')[1]].length > NickNames[@name.split(' ')[0]].length
+          @name.gsub!(/(#{@name.split(' ')[0]}) /, "\\1,")
+        end
+
         @name.gsub!(/;/, '')
         @name.gsub!(/(.+),(.+)/, "\\2 ;\\1")
         @name.strip!
@@ -69,6 +77,12 @@ module NameParser
           when match = @name.match(Regexp.new('^%s%s%s$' % [ NAME_PATTERN, NAME_PATTERN, LAST_NAME_PATTERN ], true))
             @first, @middle, @last = match.captures
         end
+      end
+
+      def fix_cases
+        @first.capitalize!
+        @middle.capitalize!
+        @last.capitalize!
       end
   end
 end
