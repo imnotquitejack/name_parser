@@ -80,9 +80,9 @@ module NameParser
       end
 
       def fix_cases
-        @first.capitalize!
-        @middle.capitalize!
-        @last.capitalize!
+        [:first, :middle, :last].each do |part|
+          self.instance_variable_get("@#{part}").capitalize! if self.instance_variable_get("@#{part}").respond_to?(:capitalize)
+        end
       end
   end
 end

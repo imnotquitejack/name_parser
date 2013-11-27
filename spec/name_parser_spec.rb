@@ -45,6 +45,12 @@ describe NameParser do
         name.middle.should eq 'Ann'
         name.last.should eq 'Haldeman'
       end
+
+      it "should not explode when name parts are missing" do
+        lambda {
+          NameParser.parse("Phineas Gage")
+        }.should_not raise_exception
+      end
     end
   end
 end
