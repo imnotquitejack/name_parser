@@ -2,11 +2,16 @@ module NameParser
   class Parser
     include Patterns
 
-    attr_reader :first, :middle, :last, :title, :suffix
+    attr_reader :first, :middle, :last, :title, :suffixes
 
     def initialize(name)
       @name = name.dup
+      @suffixes = []
       run
+    end
+
+    def suffix
+      @suffixes.first
     end
 
     protected
@@ -18,7 +23,7 @@ module NameParser
         reverse_last_and_first_names
         remove_commas
         parse_title
-        parse_suffix
+        parse_suffixes
         parse_name
         fix_cases
       end
@@ -33,7 +38,8 @@ module NameParser
       end
 
       def clean_trailing_suffixes
-        @name.gsub!(Regexp.new("(.+), (%s)$" % SUFFIX_PATTERN, true), "\\1 \\2")
+        while(!@name.gsub!(Regexp.new("(.+), (%s)" % SUFFIX_PATTERN, true), "\\1 \\2").nil?) do
+        end
       end
 
       def reverse_last_and_first_names
@@ -60,10 +66,12 @@ module NameParser
         end
       end
 
-      def parse_suffix
-        if match = @name.match(Regexp.new("(.+) (%s)$" % SUFFIX_PATTERN, true))
+      def parse_suffixes
+        # p @name
+        while(match = @name.match(Regexp.new("(.+) (%s)$" % SUFFIX_PATTERN, true))) do
           @name = match[1].strip
-          @suffix = match[2]
+          # puts "parsing suffix: #{@name}"
+          @suffixes << match[2]
         end
       end
 

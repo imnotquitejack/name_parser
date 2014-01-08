@@ -6,7 +6,7 @@ module NameParser
     |Lo|St\\.|Den|Von|Van|Von Der|Van De[nr])?\\s+([\\w]+))"
 
     SUFFIX_PATTERN = "Jn?r\.?,? Esq\.?|Sn?r\.?,? Esq\.?|I{1,3},? Esq\.?|Jn?r\.?,? M\.?D\.?|Sn?r\.?,? M\.?D\.?|\
-    I{1,3},? M\.?D\.?|Sn?r\.?|Jn?r\.?|Esq(\.|uire)?|Esquire.|Attorney at Law.|Attorney-at-Law.|Ph\.?d\.?|C\.?P\.?A\.?|\
+    I{1,3},? M\.?D\.?|Sn?r\.?|Jn?r\.?|Esq(\.|uire)?|Esquire.|Attorney at Law.|Attorney-at-Law.|J\.?D\.?|Ph\.?d\.?|C\.?P\.?A\.?|\
     XI{1,3}|X|IV|VI{1,3}|V|IX|I{1,3}\.?|M\.?D\.?|D.?M\.?D\.?"
  
     STANDARD = "M(ister|aster|issus|iss|r\\.?|rs\\.?|s\\.?|mme\\.?|essr\\.?)"

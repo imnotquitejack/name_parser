@@ -59,7 +59,7 @@ describe Parser do
       set_name('Biggie Smalls, Junior, Esquire, Phd., VII')
       parser.clean_trailing_suffixes
 
-      get_name.should == 'Biggie Smalls, Junior, Esquire, Phd. VII'
+      get_name.should == 'Biggie Smalls, Junior Esquire Phd. VII'
     end
   end
 
@@ -123,13 +123,13 @@ describe Parser do
       before { set_name('Bubba Watson Jr.') }
 
       it 'returns the suffix' do
-        parser.parse_suffix
+        parser.parse_suffixes
         parser.suffix.should == 'Jr.'
 
       end
 
       it 'removes the suffix from name' do
-        parser.parse_suffix
+        parser.parse_suffixes
 
         get_name.should == 'Bubba Watson'
       end
@@ -139,7 +139,7 @@ describe Parser do
        it 'returns nil' do
          set_name('Bubba Watson')
 
-         parser.parse_suffix
+         parser.parse_suffixes
          parser.suffix.should be_nil
        end
     end
