@@ -23,6 +23,16 @@ describe NameParser do
     end
   end
 
+  describe 'parsing multiple suffixes' do
+    it 'should parse correctly' do
+      name = NameParser.parse("David L. Bradfute, Ph.D., J.D.")
+      name.last.should eq 'Bradfute'
+      name.first.should eq 'David'
+      name.middle.should eq 'L'
+      name.suffixes.should eq ['J.D.', 'Ph.D.']
+    end
+  end
+
   describe '.parse' do
     context "should parse punctuation-less name mixes" do
       it "should parse LAST FIRST M" do
