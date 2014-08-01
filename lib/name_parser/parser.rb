@@ -38,14 +38,12 @@ module NameParser
       end
 
       def clean_trailing_suffixes
-        while(!@name.gsub!(Regexp.new("(.+), (%s)" % SUFFIX_PATTERN, true), "\\1 \\2").nil?) do
+        while !@name.gsub!(Regexp.new("(.+), (%s)" % SUFFIX_PATTERN, true), "\\1 \\2").nil? do
         end
       end
 
       def reverse_last_and_first_names
         # If the second name is in the nicknames list, then the format is probably LAST FIRST MIDDLE without commas
-        #debugger if @name == 'Collier Jonathan C'
-        #debugger
         if NickNames[@name.split(' ')[1]].length > NickNames[@name.split(' ')[0]].length
           @name.gsub!(/(#{@name.split(' ')[0]}) /, "\\1,")
         end
@@ -77,13 +75,13 @@ module NameParser
 
       def parse_name
         case
-          when match = @name.match(Regexp.new('^%s%s$' % [ NAME_PATTERN, LAST_NAME_PATTERN ], true))
-            @first, @last = match.captures
-          when match = @name.match(Regexp.new('^%s%s%s%s$' % [ NAME_PATTERN, NAME_PATTERN, NAME_PATTERN, LAST_NAME_PATTERN ], true))
-            @first, *middles, @last = match.captures[0..3]
-            @middle = middles.join(' ')
-          when match = @name.match(Regexp.new('^%s%s%s$' % [ NAME_PATTERN, NAME_PATTERN, LAST_NAME_PATTERN ], true))
-            @first, @middle, @last = match.captures
+        when match = @name.match(Regexp.new('^%s%s$' % [NAME_PATTERN, LAST_NAME_PATTERN], true))
+          @first, @last = match.captures
+        when match = @name.match(Regexp.new('^%s%s%s%s$' % [NAME_PATTERN, NAME_PATTERN, NAME_PATTERN, LAST_NAME_PATTERN], true))
+          @first, *middles, @last = match.captures[0..3]
+          @middle = middles.join(' ')
+        when match = @name.match(Regexp.new('^%s%s%s$' % [NAME_PATTERN, NAME_PATTERN, LAST_NAME_PATTERN], true))
+          @first, @middle, @last = match.captures
         end
       end
 
