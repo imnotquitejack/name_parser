@@ -30,6 +30,9 @@ describe NameParser do
       name.first.should eq 'David'
       name.middle.should eq 'L'
       name.suffixes.should eq ['J.D.', 'Ph.D.']
+      name.first_initial.should eq 'D'
+      name.middle_initial.should eq 'L'
+      name.last_initial.should eq 'B'
     end
   end
 

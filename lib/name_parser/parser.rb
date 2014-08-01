@@ -14,6 +14,18 @@ module NameParser
       @suffixes.first
     end
 
+    def first_initial
+      @first[0] rescue nil
+    end
+
+    def middle_initial
+      @middle[0] rescue nil
+    end
+
+    def last_initial
+      @last[0] rescue nil
+    end
+
     protected
 
       def run
