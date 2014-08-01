@@ -1,6 +1,7 @@
 # Taken from https://github.com/TylerRick/nick_names
 require 'singleton'
 
+# Identify possible nicknames for a given name.
 class NickNames
   include Singleton
 
@@ -8,6 +9,7 @@ class NickNames
     instance.equivalencies_for(first_name)
   end
 
+  # Given a name, return an array of possible nicknames
   def equivalencies_for(first_name)
     first_name = first_name.dup.downcase
 
