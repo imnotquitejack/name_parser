@@ -84,7 +84,8 @@ module NameParser
         # If the second name is in the nicknames list, then the format is probably LAST FIRST MIDDLE without commas
 
         if @options[:check_for_reversed_names]
-          if NickNames[@name.split(' ')[1]].length > NickNames[@name.split(' ')[0]].length
+          if Alias::Person.show(@name.split(' ')[1]).length >
+            Alias::Person.show(@name.split(' ')[0]).length
             @name.gsub!(/(#{@name.split(' ')[0]}) /, '\\1,')
           end
         end
