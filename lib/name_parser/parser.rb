@@ -1,11 +1,29 @@
+require 'alias'
+
 module NameParser
+  # Represents a parsing object that describes a given name.
   class Parser
     include Patterns
 
     attr_reader :first, :middle, :last, :title, :suffixes
 
-    def initialize(name)
+    # Options can include:
+    #  messy_data: [true|false]
+    #  check_for_reversed_names: [true|false]
+    def initialize(name, options = {})
       @name = name.dup
+
+      @options = {
+        check_for_reversed_names: false,
+      }
+
+      if options[:messy_data]
+        @options.update(
+          check_for_reversed_names: true,
+        )
+      end
+      @options.update(options) # Override with explicit options
+
       @suffixes = []
       run
     end
@@ -32,12 +50,13 @@ module NameParser
         remove_non_name_characters
         remove_extra_spaces
         clean_trailing_suffixes
-        reverse_last_and_first_names
-        remove_commas
         parse_title
         parse_suffixes
+        remove_commas
+        reverse_last_and_first_names
         parse_name
         fix_cases
+        handle_only_first_names
       end
 
       def remove_non_name_characters
@@ -49,19 +68,29 @@ module NameParser
         @name.strip!
       end
 
+      # David L. Bradfute, Ph.D., J.D. becomes David L. Bradfute Ph.D. J.D.
+      # We don't want to simply remove all of the spaces;
+      # they can differentiate first and last names.
       def clean_trailing_suffixes
-        while !@name.gsub!(Regexp.new("(.+), (%s)" % SUFFIX_PATTERN, true), "\\1 \\2").nil? do
+        # true means case insensitive
+        pattern = Regexp.new(format('(.+), (%s)', SUFFIX_PATTERN), true)
+        until @name.gsub!(pattern, '\\1 \\2').nil? do
+          # Replace suffixes...
         end
       end
 
+      # This is applied when #messy_data == true
       def reverse_last_and_first_names
         # If the second name is in the nicknames list, then the format is probably LAST FIRST MIDDLE without commas
-        if NickNames[@name.split(' ')[1]].length > NickNames[@name.split(' ')[0]].length
-          @name.gsub!(/(#{@name.split(' ')[0]}) /, "\\1,")
+
+        if @options[:check_for_reversed_names]
+          if NickNames[@name.split(' ')[1]].length > NickNames[@name.split(' ')[0]].length
+            @name.gsub!(/(#{@name.split(' ')[0]}) /, '\\1,')
+          end
         end
 
         @name.gsub!(/;/, '')
-        @name.gsub!(/(.+),(.+)/, "\\2 ;\\1")
+        @name.gsub!(/(.+),(.+)/, '\\2 ;\\1')
         @name.strip!
       end
 
@@ -70,19 +99,30 @@ module NameParser
       end
 
       def parse_title
-        if match = @name.match(Regexp.new("^(%s) (.+)" % TITLE_PATTERN, true))
-          @name = match[-1]
+        before_and_after("TITLES") do
+          pattern = /(^(?:#{TITLE_PATTERN})\b)/i
+          return unless match = @name.match(pattern)
           @title = match[1].strip
+          @name.gsub!(/#{@title}/, '')
         end
       end
 
       def parse_suffixes
-        # p @name
-        while(match = @name.match(Regexp.new("(.+) (%s)$" % SUFFIX_PATTERN, true))) do
-          @name = match[1].strip
-          # puts "parsing suffix: #{@name}"
-          @suffixes << match[2]
+        before_and_after("SUFFIXES") do
+          pattern = /(\b(?:#{SUFFIX_PATTERN}))$/i
+          while match = @name.match(pattern) do
+            suffix = match[1].strip
+            @suffixes << suffix
+            @name.gsub!(/#{suffix}/, '')
+            # puts "parsing suffix: #{@name}"
+          end
         end
+      end
+
+      def before_and_after(label='')
+        puts "BEFORE #{label}: #{@name}"
+        yield
+        puts "AFTER #{label}: #{@name}"
       end
 
       def parse_name
@@ -101,6 +141,11 @@ module NameParser
         [:first, :middle, :last].each do |part|
           self.instance_variable_get("@#{part}").capitalize! if self.instance_variable_get("@#{part}").respond_to?(:capitalize)
         end
+      end
+
+      def handle_only_first_names
+        return unless @first.nil? || @first.empty?
+        @first = @name
       end
   end
 end
