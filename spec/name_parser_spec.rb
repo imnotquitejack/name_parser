@@ -40,6 +40,8 @@ describe NameParser do
 
     it 'should handle first names only' do
       NameParser.parse('Jon').first.should eq 'Jon'
+      NameParser.parse('Jon J.D.').first.should eq 'Jon'
+      NameParser.parse('Jon J.D.').suffixes.should eq ['J.D.']
     end
 
     context 'with messy data' do

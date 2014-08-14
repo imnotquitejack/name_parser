@@ -1,46 +1,17 @@
-# NameParser [![Build Status](https://secure.travis-ci.org/dfhcc/name_parser.png)](http://travis-ci.org/dfhcc/name_parser)
+Usage
+================
+The name parser should be capable of handling all kinds of formats,
+with all kinds of titles and suffixes (including military, legal, and
+otherwise). You can optionally give it the `messy_data: true` parameter
+if the data is especially messy.
 
+Fully Namespaced
+----------------
+    NameParser.parse('BETTY ANN HALDEMAN')
+    NameParser.parse('Adams Jr., Mr. John Quincy', messy_data: true)
 
-Does what it says. Based on Matthew Ericson's people gem: https://github.com/mericson/people which, in turn, is loosely based on 
-the Lingua-EN-NameParser Perl module.
-
-To set up development environment clone the repo and run `bundle` to get all of the dependencies.
-
-## Usage
-
-```ruby
-require "name_parser"
-
-include NameParser
-
-name = "Captain Arthur Two Sheds Jackson Jr."
-
-parser = Parser.new(name)
-
-parser.first  # => "Arthur"
-parser.middle # => "Two Sheds"
-parser.last   # => "Jackson"
-parser.title  # => "Captain"
-parser.suffix # => "Jr."
-```
-
-or using the mixin
-
-```ruby
-require "name_parser"
-
-include NameParser
-
-name = "Captain Arthur Two Sheds Jackson Jr."
-
-parser = name_parser(name) # => NameParser::Parser
-
-parser.first # => "Arthur"
-# ...
-```
-
-## Supported Ruby Versions
-
-- 1.9.2
-- 1.9.3
-- 2.0.0
+On a Text object
+----------------
+    'Jon Collier'.parse_name
+    'Collier Jon'.parse_name(messy_data: true)
+    'Collier, Jon'.parse_name
