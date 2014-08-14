@@ -50,10 +50,10 @@ module NameParser
         remove_non_name_characters
         remove_extra_spaces
         clean_trailing_suffixes
+        reverse_last_and_first_names
+        remove_commas
         parse_title
         parse_suffixes
-        remove_commas
-        reverse_last_and_first_names
         parse_name
         fix_cases
         handle_only_first_names
@@ -99,30 +99,19 @@ module NameParser
       end
 
       def parse_title
-        before_and_after("TITLES") do
-          pattern = /(^(?:#{TITLE_PATTERN})\b)/i
-          return unless match = @name.match(pattern)
-          @title = match[1].strip
-          @name.gsub!(/#{@title}/, '')
-        end
+        pattern = Regexp.new("^(%s) (.+)" % TITLE_PATTERN, true)
+        return unless match = @name.match(pattern)
+        @title = match[1].strip
+        @name = @name.gsub!(/#{@title}/, '').strip
       end
 
       def parse_suffixes
-        before_and_after("SUFFIXES") do
-          pattern = /(\b(?:#{SUFFIX_PATTERN}))$/i
-          while match = @name.match(pattern) do
-            suffix = match[1].strip
-            @suffixes << suffix
-            @name.gsub!(/#{suffix}/, '')
-            # puts "parsing suffix: #{@name}"
-          end
+        pattern = Regexp.new("(.+) (%s)$" % SUFFIX_PATTERN, true)
+        while match = @name.match(pattern) do
+          suffix = match[2]
+          @suffixes << suffix
+          @name = @name.gsub!(/#{suffix}/, '').strip
         end
-      end
-
-      def before_and_after(label='')
-        puts "BEFORE #{label}: #{@name}"
-        yield
-        puts "AFTER #{label}: #{@name}"
       end
 
       def parse_name

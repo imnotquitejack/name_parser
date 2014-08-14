@@ -6,7 +6,7 @@ Parser.send(:public, *Parser.protected_instance_methods)
 
 describe Parser do
   let(:name) { 'Horatio Xavier Hornblower' }
-  let!(:parser) { Parser.new(name) }
+  let!(:parser) { Parser.new(name, messy_data: true) }
 
   [:name, :first, :middle, :last, :title, :suffix ].each do |attr|
     describe "#{attr} attribute" do
